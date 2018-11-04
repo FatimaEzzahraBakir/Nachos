@@ -1,0 +1,7 @@
+
+--Cette ligne, et les suivantes ci-dessous, seront ignorées--
+
+M    userprog/exception.cc
+M    userprog/progtest.cc
+M    userprog/progtest.h
+M    userprog/syscall.h
