@@ -17,6 +17,7 @@ void SynchPutInt(int N);
 void SynchGetInt(int *N);
 private:
 Console *console;
+
 };
 #endif // SYNCHCONSOLE_H
 #endif // CHANGED

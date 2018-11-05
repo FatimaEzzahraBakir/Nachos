@@ -5,12 +5,16 @@
 #include "synch.h"
 static Semaphore *readAvail;
 static Semaphore *writeDone;
+static Semaphore *mutexPut ;
+static Semaphore *mutexGet ;
 static void ReadAvailHandler(void *arg) { (void) arg; readAvail->V(); }
 static void WriteDoneHandler(void *arg) { (void) arg; writeDone->V(); }
 SynchConsole::SynchConsole(const char *in, const char *out)
 {
 readAvail = new Semaphore("read avail", 0);
 writeDone = new Semaphore("write done", 0);
+mutexPut = new Semaphore ("mutexPut",1);
+mutexGet = new Semaphore ("mutexGet",1);
 console = new Console (in, out, ReadAvailHandler, WriteDoneHandler, 0);
 }
 SynchConsole::~SynchConsole()
@@ -21,14 +25,19 @@ delete readAvail;
 }
 void SynchConsole::SynchPutChar(int ch)
 {
+  mutexPut->P();
   console->PutChar (ch);
   writeDone->P ();
+  mutexPut->V();
 }
 
 int SynchConsole::SynchGetChar()
 {
+  mutexGet->P();
   readAvail-> P ();
-  return console->GetChar ();
+  int c= console->GetChar ();
+  mutexGet->V();
+  return c;
 }
 void SynchConsole::SynchPutString(const char s[])
 {
