@@ -33,8 +33,8 @@ class AddrSpace:dontcopythis
     void SaveState ();		// Save/restore address space-specific
     void RestoreState ();	// info on a context switch
 
-    int nombre_thread=1;
-    int AllocateUserStack();
+    int nombre_thread=0;
+    int AllocateUserStack(int nombre_thread);
   private:
       TranslationEntry * pageTable;	// Assume linear page table translation
     // for now!

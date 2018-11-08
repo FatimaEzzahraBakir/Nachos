@@ -198,6 +198,6 @@ AddrSpace::RestoreState ()
     machine->pageTableSize = numPages;
 }
 int
-AddrSpace::AllocateUserStack(){
-  return (PageSize*numPages)-256;
+AddrSpace::AllocateUserStack(int nombre_thread){
+  return (PageSize*numPages-nombre_thread*256);
 }

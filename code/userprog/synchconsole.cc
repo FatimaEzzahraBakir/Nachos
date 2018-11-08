@@ -33,8 +33,8 @@ void SynchConsole::SynchPutChar(int ch)
 
 int SynchConsole::SynchGetChar()
 {
-  mutexGet->P();
   readAvail-> P ();
+  mutexGet->P();
   int c= console->GetChar ();
   mutexGet->V();
   return c;

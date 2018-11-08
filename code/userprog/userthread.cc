@@ -8,6 +8,7 @@
 
  static Semaphore *mutexThread = new Semaphore ("nombre de threads",1);
 
+
 typedef  struct schmurtz{
   int f;
   int arg;
@@ -16,62 +17,64 @@ typedef  struct schmurtz{
 
 
 
+
+int do_ThreadCreate(int f, int arg)
+{
+  schmurtz *s=(schmurtz*)malloc(sizeof(struct schmurtz));
+  Thread *newthread = new Thread ("new thread");
+  s->f=f;
+  s->arg=arg;
+  s->val_return=machine->ReadRegister(6);
+
+
+ mutexThread->P();
+  currentThread->space->nombre_thread++;
+mutexThread->V();
+newthread->Start(StartUserThread,(void*)s);
+
+}
+
 static void StartUserThread(void *Schmurtz){
 
     DEBUG('x',"%s\n", currentThread->getName());
     int i;
     schmurtz *s=(schmurtz*)Schmurtz;
+
+    //initialisation des registres
     for (i = 0; i < NumTotalRegs; i++)
 
 
       machine->WriteRegister (i, 0);
+
+      //Placer les paramètres dans le registre 4
       machine->WriteRegister (4, s->arg);
-      // Initial program counter -- must be location of "Start"
+
+      //écrire l'adresse de la fonction f
       machine->WriteRegister (PCReg,s->f );
+
+
+
+      machine->WriteRegister (NextPCReg, (s->f) + 4);
+
+
+      machine->WriteRegister (StackReg, currentThread->space->AllocateUserStack(currentThread->space->nombre_thread)-16);
+
+      printf("===========> %d \n",currentThread->space->AllocateUserStack(currentThread->space->nombre_thread)-16);
       machine->WriteRegister(RetAddrReg,s->val_return);
-
-      // Need to also tell MIPS where next instruction is, because
-      // of branch delay possibility
-      machine->WriteRegister (NextPCReg, machine->ReadRegister(PCReg) + 4);
-
-      // Set the stack register to the end of the address space, where we
-      // allocated the stack; but subtract off a bit, to make sure we don't
-      // accidentally reference off the end!
-      machine->WriteRegister (StackReg, currentThread->space->AllocateUserStack() - 16);
-      DEBUG ('a', "Initializing stack register to 0x%x\n",currentThread->space->AllocateUserStack()- 16);
-  
-
+      free(s);
       machine->Run();
 }
 
-int do_ThreadCreate(int f, int arg)
-{
-  char str[20];
-  schmurtz *s=(schmurtz*)malloc(sizeof(struct schmurtz));
-  sprintf(str,"thread: %d",currentThread->space->nombre_thread );
-  Thread *newthread = new Thread (str);
-  s->f=f;
-  s->arg=arg;
-  s->val_return=machine->ReadRegister(6);
-  newthread->Start(StartUserThread,(void*)s);
-  mutexThread->P();
-  currentThread->space->nombre_thread++;
-  mutexThread->V();
-
-}
 
 void do_ThreadExit(){
 
-  if(currentThread->space->nombre_thread>1){
+
   mutexThread->P();
   currentThread->space->nombre_thread--;
   mutexThread->V();
   currentThread->Finish();
-  }
-  else
-  {
-    interrupt->Halt();
-  }
+  
+
 
 }
 #endif

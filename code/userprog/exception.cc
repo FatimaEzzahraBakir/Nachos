@@ -89,9 +89,12 @@ ExceptionHandler (ExceptionType which)
       #ifdef CHANGED
       case SC_Exit:
   		  {
+          while(currentThread->space->nombre_thread>0) {
+		      currentThread->Yield(); }
   		    DEBUG ('s', "Exit.\n");
           //on affiche la valeur de retour stocke dans le registre 4
           printf("Exit %d\n",machine->ReadRegister(4) );
+
   		    interrupt->Halt ();
   		    break;
   		  }
