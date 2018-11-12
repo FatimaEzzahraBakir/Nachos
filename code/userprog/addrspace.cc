@@ -21,7 +21,7 @@
 #include "noff.h"
 #include "syscall.h"
 #include "new"
-
+#include "bitmap.h"
 //----------------------------------------------------------------------
 // SwapHeader
 //      Do little endian to big endian conversion on the bytes in the
@@ -122,8 +122,11 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	   size - UserStacksAreaSize, UserStacksAreaSize);
 
     pageTable[0].valid = FALSE;			// Catch NULL dereference
-}
 
+#ifdef CHANGED
+ bitmap = new BitMap ((UserStacksAreaSize / 256));
+#endif //CHANGED
+}
 //----------------------------------------------------------------------
 // AddrSpace::~AddrSpace
 //      Dealloate an address space.  Nothing for now!
@@ -135,6 +138,7 @@ AddrSpace::~AddrSpace ()
   // delete pageTable;
   delete [] pageTable;
   // End of modification
+  delete bitmap;
 }
 
 //----------------------------------------------------------------------
@@ -198,6 +202,7 @@ AddrSpace::RestoreState ()
     machine->pageTableSize = numPages;
 }
 int
-AddrSpace::AllocateUserStack(int nombre_thread){
+AddrSpace::AllocateUserStack(int nombre_thread)
+{
   return (PageSize*numPages-nombre_thread*256);
 }

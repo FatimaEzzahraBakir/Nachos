@@ -16,7 +16,7 @@
 #include "copyright.h"
 #include "filesys.h"
 #include "translate.h"
-
+#include "bitmap.h"
 #define UserStacksAreaSize		1024	// increase this as necessary!
 
 class AddrSpace:dontcopythis
@@ -35,6 +35,7 @@ class AddrSpace:dontcopythis
 
     int nombre_thread=0;
     int AllocateUserStack(int nombre_thread);
+    BitMap *bitmap;
   private:
       TranslationEntry * pageTable;	// Assume linear page table translation
     // for now!
