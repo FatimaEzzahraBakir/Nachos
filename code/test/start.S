@@ -212,8 +212,10 @@ GetChar:
         .ent	ThreadCreate
         ThreadCreate:
         addiu $2,$0,SC_ThreadCreate
+        la $6 , ThreadExit
         syscall
         j	$31
+
         .end ThreadCreate
   //***************************************
 

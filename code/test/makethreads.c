@@ -6,18 +6,19 @@ void print(char c){
   for(i=0;i<3;i++)
   { PutChar(c+i); }
     PutChar('\n');
-    ThreadExit();
+    //ThreadExit();
 }
 int main()
 {
 
 
 int threads=10;
-int i=0;
+volatile int  i;
 
 for(i=0; i<threads; i++)
 {
   ThreadCreate((void *)print,'a');
+  PutChar('m');
 }
 
   //PutChar('m');

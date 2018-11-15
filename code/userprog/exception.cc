@@ -90,7 +90,10 @@ ExceptionHandler (ExceptionType which)
       case SC_Exit:
   		  {
           while(currentThread->space->nombre_thread>0) {
-		      currentThread->Yield(); }
+		        currentThread->Yield();
+
+           }
+
   		    DEBUG ('s', "Exit.\n");
           //on affiche la valeur de retour stocke dans le registre 4
           printf("Exit %d\n",machine->ReadRegister(4) );
@@ -181,7 +184,9 @@ ExceptionHandler (ExceptionType which)
                                     {
 
                                       DEBUG ('s', "ThreadCreate\n");
-                                      do_ThreadCreate(machine->ReadRegister(4),machine->ReadRegister(5));
+                                      int espace= do_ThreadCreate(machine->ReadRegister(4),machine->ReadRegister(5),machine->ReadRegister(6));
+
+
                                       break;
                                     }
                 case SC_ThreadExit:

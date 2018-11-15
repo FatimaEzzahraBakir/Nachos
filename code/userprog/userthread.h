@@ -5,7 +5,7 @@
 
 
 static void StartUserThread(void *schmurtz);
-extern int do_ThreadCreate(int f, int arg);
+extern int do_ThreadCreate(int f, int arg,int val);
 extern void do_ThreadExit();
 
 

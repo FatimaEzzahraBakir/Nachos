@@ -125,6 +125,8 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 #ifdef CHANGED
  bitmap = new BitMap ((UserStacksAreaSize / 256));
+ bitmap->Mark(0);
+ currentThread->pos=0;
 #endif //CHANGED
 }
 //----------------------------------------------------------------------
